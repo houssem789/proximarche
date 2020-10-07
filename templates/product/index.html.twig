@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+<style>
+    .center {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" align="center">
+  <a class="navbar-brand" href="#"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Dashbord <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Categories</a>
+      </li>
+      <li class="nav-item">
+        {% set date = 'now' | date_modify('first day of this month') | date('d-m-Y') %}
+        <a class="nav-link" href="{{ path('products_by_month', {date: date, page: 1}) }}">Products</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Listing achats/mois</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="form-group">
+    <form id="dateForm" method="POST" action="{{ path('add_product', {date: "dateSelected"}) }}">
+      <input class="form-control" type="hidden" id="hiddenFieldDateSelector" name="dateSelected" value="dateSelectedValue">
+      <input onchange="handler(event);" class="form-control" type="date" id="start" name="start">
+    </form>
+  </div>
+  <div class="container">
+    {% if products|length > 1 %}
+      <table class="table table-striped center">
+        <tr>
+          <th>Categorie</th>
+          <th>Produit</th>
+          <th>Détails produit</th>
+          <th>Date d'achat</th>
+          <th>Date d'expiration</th>
+          <th>Quantité</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td>{{product.category}}</td>
+            <td>{{product.nameProduct}}</td>
+            <td>{{product.detailsProduct}}</td>
+            <td>{{product.purshaseDate|date("d/m/Y")}}</td>
+            <td>{{product.expirationDate|date("d/m/Y")}}</td>
+            <td>{{product.quantity}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item {% if app.request.get('page') == 1 %} disabled {%endif%}">
+        <a class="page-link" href="{{ path('products_by_month', {date: app.request.get('date'), page: app.request.get('page')-1}) }}" tabindex="-1">Previous</a>
+      </li>
+      <li class="page-item {% if app.request.get('page') == lastPage %} disabled {%endif%}">
+        <a class="page-link" href="{{ path('products_by_month', {date: app.request.get('date'), page: app.request.get('page')+1}) }}">Next</a>
+      </li>
+    </ul>
+  </nav>
+  {% endif %}    
+  
+</div>
+<script>
+  function handler(e){
+    var date = e.target.value + '-01';
+    var dateParts = date.split('-');
+    var selectedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+    document.getElementById("hiddenFieldDateSelector").value = selectedDate;
+    document.getElementById("dateForm").action = "/products/" + selectedDate;
+    document.getElementById("dateForm").submit();
+  }
+</script>
+{% endblock %}

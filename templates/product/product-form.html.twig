@@ -1,0 +1,82 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light" align="center">
+  <a class="navbar-brand" href="#"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Dashbord <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Categories</a>
+      </li>
+      <li class="nav-item">
+        {% set date = 'now' | date_modify('first day of this month') | date('d-m-Y') %}
+        <a class="nav-link" href="{{ path('products_by_month', {date: date, page: 1}) }}">Products</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Listing achats/mois</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+    <form id="regForm" method="POST" action="{{ path('add_product') }}">
+      <h1>Push achat <i class="fa fa-money" aria-hidden="true"></i></h1>
+      <p>
+      <div class="form-group">
+        <label for="select-list-categorie">Commence par shoisir une catégorie</label>
+        <select class="form-control" name="categorie" required>
+          <option value="">Choisie une catégorie</option>
+          {% for categorie in categories %}
+              <option value="{{ categorie.id }}">{{ categorie.categName }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      </p>
+      <div class="tab">Nom de produit:
+        <p>
+          <div class="input-group mb-3">
+            <input class="form-control datefield" id="product_name" name="product_name" type="text" autocomplete="off" autocomplete="off" required="required">
+            <span class="input-group-addon">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#availableProductModal">
+              <span class="glyphicon glyphicon-eye-open"></span>*</button>
+            </span>
+          </div>
+        </p>
+        Détails produit:
+        <p>
+          <textarea id="product_details" name="product_details" maxlength="30" rows="2" placeholder="Decrit le produit..." class="form-control" style="min-width: 100%"></textarea>
+        </p>      
+        {% include 'product/popup/available-product.html.twig' %}
+        Date de l'achat:
+        <p>
+          <input class="form-control" type="date" id="start" name="purshase_date" value="{{ todayDate }}" min="2018-01-01" max="2040-12-31" autocomplete="off" required="required">
+        </p>
+        Quantité:
+        <p>
+          <input class="form-control" placeholder="Quantité..." oninput="this.className = ''" name="quantity" type="integer" autocomplete="off" required="required">
+        </p>
+        Date d'éxpiration:
+        <p>
+          <input class="form-control" type="date" id="start" name="expiration_date" min="2018-01-01" max="2040-12-31" autocomplete="off" required="required">
+        </p>
+      </div>
+      <input class="btn btn-primary" type="submit" value="Sauvgarder">
+    </form>
+
+    <script>
+      window.onload = myMain;
+      function myMain() {
+        document.getElementById("products-container").onclick = buton;
+      }
+      function buton(e) {
+        if (e.target.tagName == 'BUTTON') {
+          document.getElementById("product_name").value = e.target.textContent;
+        }
+      }
+    </script>
+{% endblock %}
