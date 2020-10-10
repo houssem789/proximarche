@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -42,7 +44,6 @@ class ProductRepository extends ServiceEntityRepository
 
         //Data 
         $data = [];
-        
         //Now get one page's items:
         $paginator
             ->getQuery()
@@ -56,6 +57,22 @@ class ProductRepository extends ServiceEntityRepository
         return ["data" => $data, "totalItems" => $totalItems, "pages" => $pagesCount];
     }
 
+    public function getProductsByExpirationDate($startDate, $endDate, $categ = 'crémerie')
+    {
+        $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
+        $endDate = DateTime::createFromFormat('Y-m-d', $endDate);
+
+
+        return $this->createQueryBuilder('p')
+            ->where('p.expirationDate BETWEEN :initialDate AND :finalDate')
+            ->join('p.category', 'c')
+            ->andWhere('c.categName LIKE :categ')
+            ->setParameter('initialDate', $startDate->format('Y-m-d'))
+            ->setParameter('finalDate', $endDate->format('Y-m-d'))
+            ->setParameter('categ', $categ)
+            ->getQuery()
+            ->getResult();
+    }
 
     // /**
     //  * @return Product[] Returns an array of Product objects

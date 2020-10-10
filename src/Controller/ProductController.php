@@ -10,10 +10,30 @@ use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
+
+    /**
+     * @Route("/dashbord", name="dashbord")
+     */
+    public function dashbord(Request $request, Helper $helper)
+    {
+        $repo        = $this->getDoctrine()->getRepository(Product::class);
+        $startDate   = date("Y-m-d");
+        $endDate     = (new \DateTime($startDate))->modify('+2 day')->format('Y-m-d');
+
+        $liquidProduct = $repo->getProductsByExpirationDate($startDate, $endDate, 'Liquide');
+        $creamyProduct = $repo->getProductsByExpirationDate($startDate, $endDate, 'crémerie');
+
+        return $this->render('product/dashbord.html.twig', [
+            'liquidProducts' => $liquidProduct,
+            'creamyProducts' => $creamyProduct
+        ]);
+    }
+
     /**
      * @Route("/products", name="products")
      */
@@ -27,8 +47,7 @@ class ProductController extends AbstractController
         $products = $em->getRepository(Product::class)->getProductsPurshasedByPeriod($startDate, $endDate);
 
         return $this->render('product/index.html.twig', [
-            'controller_name' => 'ProductController',
-            'products' => $products
+            'products' => $products['data']
         ]);
     }
 
@@ -53,19 +72,13 @@ class ProductController extends AbstractController
             $products = $em->getRepository(Product::class)
                 ->getProductsPurshasedByPeriod($startDate, $endDate, $page);
 
-            if ($page > $products['pages']) {
-
-                throw $this->createNotFoundException('asking for a non available page');
-            }
-
             return $this->render('product/index.html.twig', [
-                'controller_name' => 'ProductController',
-                'products' => $products['data'],
-                'lastPage' => $products['pages']
+                'products'  => $products['data'],
+                'lastPage'  => $products['pages'],
+                'startDate' => $startDate,
+                'endDate'   => $endDate
             ]);
         }
-
-        throw new NotFoundHttpException("Page not found");
     }
 
     /**

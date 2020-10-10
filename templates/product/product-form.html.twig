@@ -1,30 +1,8 @@
-{% extends "base.html.twig" %}
 
-{% block body %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light" align="center">
-  <a class="navbar-brand" href="#"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav mx-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Dashbord <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Categories</a>
-      </li>
-      <li class="nav-item">
-        {% set date = 'now' | date_modify('first day of this month') | date('d-m-Y') %}
-        <a class="nav-link" href="{{ path('products_by_month', {date: date, page: 1}) }}">Products</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Listing achats/mois</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-    <form id="regForm" method="POST" action="{{ path('add_product') }}">
+{% include 'base-top.html.twig' %}
+    <!-- Content Row -->
+    <div class="container">
+      <form id="regForm" method="POST" action="{{ path('add_product') }}">
       <h1>Push achat <i class="fa fa-money" aria-hidden="true"></i></h1>
       <p>
       <div class="form-group">
@@ -37,6 +15,7 @@
         </select>
       </div>
       </p>
+      
       <div class="tab">Nom de produit:
         <p>
           <div class="input-group mb-3">
@@ -65,18 +44,54 @@
           <input class="form-control" type="date" id="start" name="expiration_date" min="2018-01-01" max="2040-12-31" autocomplete="off" required="required">
         </p>
       </div>
-      <input class="btn btn-primary" type="submit" value="Sauvgarder">
-    </form>
-
-    <script>
-      window.onload = myMain;
-      function myMain() {
-        document.getElementById("products-container").onclick = buton;
-      }
-      function buton(e) {
-        if (e.target.tagName == 'BUTTON') {
-          document.getElementById("product_name").value = e.target.textContent;
-        }
-      }
-    </script>
-{% endblock %}
+      <input class="btn btn-primary form-control float-right" type="submit" value="Valider">
+      </form>
+    </div>
+    
+    <!-- Content Row -->
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="availableProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Produits disponible</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="products-container" class="modal-body product-selector-modal">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCoupon">Boisson</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDiscount">Conserve</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRelatedContent">Gateaux</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAbandonedCart">Epices</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmDelete">Yaourt</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPoll">Vinoiserie</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCart">Netoyage</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPush">Liquides</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalYT">Chips</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Main Content -->
+<!-- End of Footer -->
+{% include 'base-footer.html.twig' %}
+  <!-- End of Page Wrapper -->
+  <!-- Scroll to Top Button-->
+<script>
+  window.onload = myMain;
+  function myMain() {
+    document.getElementById("products-container").onclick = buton;
+  }
+  function buton(e) {
+    if (e.target.tagName == 'BUTTON') {
+      document.getElementById("product_name").value = e.target.textContent;
+    }
+  }
+</script>
+</html>

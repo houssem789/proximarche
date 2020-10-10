@@ -1,0 +1,64 @@
+
+{% include 'base-top.html.twig' %}
+    <!-- Content Row -->
+    <div class="row">
+        {% for product in liquidProducts %}
+          <div class="col-xl-3 mb-4">
+            <div class="card border-left-success shadow h-100 py-2" id="card-{{ product.id}}">
+              <div class="card-body">
+                <button onclick="myFunction({{ product.id}})" type="button" class="close" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="row no-gutters align-items-center">
+                  <div class="col mr-2">
+                    <div>{{ product.category.categName }}</div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">{{product.nameProduct}} - {{ product.id }}</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ product.detailsProduct }}</div>
+                  </div>
+                  <div class="col-auto">
+                    <i class="">{{ product.quantity }} Produits</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+          {% for product in creamyProducts %}
+              <div class="col-xl-3 col-md-6 mb-4" id="card-{{ product.id}}">
+                <div class="card border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <button onclick="myFunction({{ product.id}})" type="button" class="close" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div>{{ product.category.categName }}</div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">{{product.nameProduct}} - {{ product.id }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ product.detailsProduct }}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="">{{ product.quantity }} Produits</i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% include 'base-footer.html.twig' %}
+  <script>
+    function myFunction(id) {
+      var x = document.getElementById('card-'+id);
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+</html>
